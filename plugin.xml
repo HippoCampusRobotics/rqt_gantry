@@ -1,0 +1,21 @@
+<library path="src">
+    <class name="ManualControlPlugin" type="rqt_gantry.gantry_gui.ManualControlPlugin" base_class_type="rqt_gui_py::Plugin">
+        <description>
+        An example Python GUI plugin to create a great user interface.
+      </description>
+        <qtgui>
+            optional grouping...
+            <group>
+                <label>Gantry</label>
+                <icon type="theme">folder</icon>
+            </group>
+            <!-- <group>
+                <label>Subgroup</label>
+            </group> -->
+
+            <label>Gantry Control</label>
+            <icon type="theme">system-help</icon>
+            <statustip>Great user interface to provide real value.</statustip>
+        </qtgui>
+    </class>
+</library>
