@@ -299,13 +299,13 @@ class ManualControlPlugin(Plugin):
         self.limit_switch_y_sub = rospy.Subscriber(
             "gantry_motor_y/limit_switches",
             GantryMotorLimitSwitches,
-            lambda msg: self.on_limit_switches_msg(msg, 0),
+            lambda msg: self.on_limit_switches_msg(msg, 1),
             queue_size=1)
 
         self.limit_switch_z_sub = rospy.Subscriber(
             "gantry_motor_z/limit_switches",
             GantryMotorLimitSwitches,
-            lambda msg: self.on_limit_switches_msg(msg, 0),
+            lambda msg: self.on_limit_switches_msg(msg, 2),
             queue_size=1)
 
         self.subs = [
