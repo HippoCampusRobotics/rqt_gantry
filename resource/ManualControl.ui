@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>377</width>
-    <height>564</height>
+    <height>752</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,7 +20,7 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0" colspan="2">
+   <item row="2" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Control</string>
@@ -29,7 +29,7 @@
       <item row="0" column="0">
        <widget class="QStackedWidget" name="stack_widget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="relative_position">
          <layout class="QGridLayout" name="gridLayout_2">
@@ -62,7 +62,7 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QPushButton" name="rel_start_homing_xy">
+           <widget class="QPushButton" name="rel_go_home_xy">
             <property name="text">
              <string/>
             </property>
@@ -134,6 +134,12 @@
           </item>
           <item row="5" column="1">
            <widget class="QPushButton" name="rel_backward_y">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -197,13 +203,6 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="0" colspan="2">
-           <widget class="QLabel" name="step_size_label">
-            <property name="text">
-             <string>Step size:</string>
-            </property>
-           </widget>
-          </item>
           <item row="11" column="0" colspan="2">
            <widget class="QLabel" name="speed_label">
             <property name="text">
@@ -245,6 +244,30 @@
           </item>
           <item row="3" column="3">
            <widget class="QPushButton" name="rel_set_home_z">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>msl.svg</normaloff>msl.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0" colspan="2">
+           <widget class="QLabel" name="step_size_label">
+            <property name="text">
+             <string>Step size:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="rel_set_home_xy">
             <property name="text">
              <string/>
             </property>
@@ -387,7 +410,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QPushButton" name="vel_start_homing_xy">
+           <widget class="QPushButton" name="vel_go_home_xy">
             <property name="text">
              <string/>
             </property>
@@ -449,14 +472,14 @@
            </widget>
           </item>
           <item row="2" column="4" colspan="3">
-           <widget class="QPushButton" name="move_disable_button">
+           <widget class="QPushButton" name="vel_disable">
             <property name="text">
              <string>Disable</string>
             </property>
            </widget>
           </item>
           <item row="1" column="4" colspan="3">
-           <widget class="QPushButton" name="move_enable_button">
+           <widget class="QPushButton" name="vel_enable">
             <property name="text">
              <string>Enable</string>
             </property>
@@ -486,25 +509,28 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="vel_set_home_xy">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>msl.svg</normaloff>msl.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="mode_combobox">
-     <item>
-      <property name="text">
-       <string>Rel. Pos.</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Velocity</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="0" column="0">
@@ -514,7 +540,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item row="3" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Position/Velocity</string>
@@ -669,6 +695,106 @@
        <widget class="QLabel" name="label_8">
         <property name="text">
          <string>Velocity</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="mode_combobox">
+     <item>
+      <property name="text">
+       <string>Rel. Pos.</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Velocity</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Limit Switches</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_6">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>x:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" alignment="Qt::AlignHCenter">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Lower</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>y:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" alignment="Qt::AlignHCenter">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Upper</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>z:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" alignment="Qt::AlignHCenter">
+       <widget class="QCheckBox" name="ll_x_indicator">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" alignment="Qt::AlignHCenter">
+       <widget class="QCheckBox" name="ul_x_indicator">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" alignment="Qt::AlignHCenter">
+       <widget class="QCheckBox" name="ll_y_indicator">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" alignment="Qt::AlignHCenter">
+       <widget class="QCheckBox" name="ul_y_indicator">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" alignment="Qt::AlignHCenter">
+       <widget class="QCheckBox" name="ll_z_indicator">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2" alignment="Qt::AlignHCenter">
+       <widget class="QCheckBox" name="ul_z_indicator">
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </item>

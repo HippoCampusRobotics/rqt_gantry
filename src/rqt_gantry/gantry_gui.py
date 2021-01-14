@@ -8,7 +8,88 @@ from python_qt_binding.QtWidgets import QWidget
 from python_qt_binding.QtCore import Signal, QThread, QObject
 from std_msgs.msg import Float64
 from std_srvs.srv import Trigger
-from hippocampus_msgs.msg import GantryMotorPosition, GantryMotorVelocity
+from hippocampus_msgs.msg import GantryMotorPosition, GantryMotorVelocity, GantryMotorLimitSwitches
+
+
+def get_axis_letter(axis):
+    if axis == 0:
+        return "x"
+    elif axis == 1:
+        return "y"
+    elif axis == 2:
+        return "z"
+    else:
+        raise ValueError("Given axis not defined.")
+
+
+def call_go_home(axis):
+    axis_letter = get_axis_letter(axis)
+    service_name = "gantry_motor_{}/start_homing".format(axis_letter)
+    start_homing = rospy.ServiceProxy(service_name, Trigger)
+    try:
+        start_homing()
+    except rospy.ServiceException as e:
+        rospy.logerr("%s", e)
+        return False
+    return True
+
+
+def call_set_home(axis):
+    axis_letter = get_axis_letter(axis)
+    service_name = "gantry_motor_{}/start_homing".format(axis_letter)
+    set_home = rospy.ServiceProxy(service_name, Trigger)
+    try:
+        set_home()
+    except rospy.ServiceException as e:
+        rospy.logerr("%s", e)
+        return False
+    return True
+
+
+def call_enable(axis):
+    axis_letter = get_axis_letter(axis)
+    service_name = "gantry_motor_{}/enable".format(axis_letter)
+    enable = rospy.ServiceProxy(service_name, Trigger)
+    try:
+        enable()
+    except rospy.ServiceException as e:
+        rospy.logerr("%s", e)
+        return False
+    return True
+
+
+def call_disable(axis):
+    axis_letter = get_axis_letter(axis)
+    service_name = "gantry_motor_{}/disable".format(axis_letter)
+    disable = rospy.ServiceProxy(service_name, Trigger)
+    try:
+        disable()
+    except rospy.ServiceException as e:
+        rospy.logerr("%s", e)
+        return False
+    return True
+
+
+def call_emergency_stop(axis):
+    axis_letter = get_axis_letter(axis)
+    service_name = "gantry_motor_{}/emergency_stop".format(axis_letter)
+    emergency_stop = rospy.ServiceProxy(service_name, Trigger)
+    try:
+        emergency_stop()
+    except rospy.ServiceException as e:
+        rospy.logerr("%s", e)
+        return False
+
+
+def call_release_emergency_stop(axis):
+    axis_letter = get_axis_letter(axis)
+    service_name = "gantry_motor_{}/release_emergency_stop".format(axis_letter)
+    release = rospy.ServiceProxy(service_name, Trigger)
+    try:
+        release()
+    except rospy.ServiceException as e:
+        rospy.logerr("%s", e)
+        return False
 
 
 class HomingWorkerXY(QObject):
@@ -77,7 +158,7 @@ class HomingWorkerZ(QObject):
 class ManualControlPlugin(Plugin):
     MODES = [
         "Rel Pos.",
-        # "Velocity",
+        "Velocity",
     ]
     position_changed = Signal(float, int)
     velocity_changed = Signal(float, int)
@@ -87,12 +168,6 @@ class ManualControlPlugin(Plugin):
         self.setObjectName("GantryGuiPlugin")
 
         self._widget = QWidget()
-        self.x_homing_thread = None
-        self.y_homing_thread = None
-        self.z_homing_thread = None
-        self.x_homing_worker = None
-        self.y_homing_worker = None
-        self.z_homing_worker = None
         ui_file = os.path.join(rospkg.RosPack().get_path("rqt_gantry"),
                                "resource", "ManualControl.ui")
 
@@ -102,9 +177,12 @@ class ManualControlPlugin(Plugin):
         self.init_modes()
         self.position_changed.connect(self.on_position_changed)
         self.velocity_changed.connect(self.on_velocity_changed)
-        self.init_homing_xy_buttons()
-        self.init_homing_z_buttons()
+        self.init_go_home_buttons()
+        self.init_set_home_buttons()
         self.init_move_relative_buttons()
+        self.init_disable_buttons()
+        self.init_enable_buttons()
+        self.init_limit_switch_indicators()
         if context.serial_number() > 1:
             self._widget.setWindowTitle(self._widget.windowTitle() +
                                         (" (%d)" % context.serial_number()))
@@ -141,15 +219,36 @@ class ManualControlPlugin(Plugin):
         else:
             rospy.logwarn("Given axis for relative position is undefined!")
 
-    def init_homing_xy_buttons(self):
-        widgets = self._get_homing_xy_widgets()
+    def init_go_home_buttons(self):
+        widgets = self._get_go_home_xy_widgets()
         for widget in widgets:
-            widget.clicked.connect(self.on_homing_xy)
+            widget.clicked.connect(self.on_go_home_xy)
 
-    def init_homing_z_buttons(self):
-        widgets = self._get_homing_z_widgets()
+    def init_set_home_buttons(self):
+        widgets = self._get_set_home_xy_widgets()
         for widget in widgets:
-            widget.clicked.connect(self.on_homing_z)
+            widget.clicked.connect(self.on_set_home_xy)
+
+        widgets = self._get_set_home_z_widgets()
+        for widget in widgets:
+            widget.clicked.connect(self.on_set_home_z)
+
+    def init_limit_switch_indicators(self):
+        for axis in range(3):
+            widgets = self._get_limit_switch_widgets(axis)
+            for widget in widgets:
+                widget.setChecked(False)
+                widget.clicked.connect(widget.toggle)
+
+    def init_enable_buttons(self):
+        widgets = self._get_enable_widgets()
+        for widget in widgets:
+            widget.clicked.connect(self.on_enable_clicked)
+
+    def init_disable_buttons(self):
+        widgets = self._get_disable_widgets()
+        for widget in widgets:
+            widget.clicked.connect(self.on_disable_clicked)
 
     def init_publishers(self):
         self.rel_pos_x_pub = rospy.Publisher(
@@ -165,102 +264,112 @@ class ManualControlPlugin(Plugin):
                                           GantryMotorPosition,
                                           self.on_position_msg,
                                           0,
-                                          queue_size=30)
+                                          queue_size=1)
         self.pos_y_sub = rospy.Subscriber("gantry_motor_y/position",
                                           GantryMotorPosition,
                                           self.on_position_msg,
                                           1,
-                                          queue_size=30)
+                                          queue_size=1)
         self.pos_z_sub = rospy.Subscriber("gantry_motor_z/position",
                                           GantryMotorPosition,
                                           self.on_position_msg,
                                           2,
-                                          queue_size=30)
+                                          queue_size=1)
         self.vel_x_sub = rospy.Subscriber("gantry_motor_x/velocity",
                                           GantryMotorVelocity,
                                           self.on_velocity_msg,
                                           0,
-                                          queue_size=30)
+                                          queue_size=1)
         self.vel_y_sub = rospy.Subscriber("gantry_motor_y/velocity",
                                           GantryMotorVelocity,
                                           self.on_velocity_msg,
                                           1,
-                                          queue_size=30)
+                                          queue_size=1)
         self.vel_z_sub = rospy.Subscriber("gantry_motor_z/velocity",
                                           GantryMotorVelocity,
                                           self.on_velocity_msg,
                                           2,
-                                          queue_size=30)
+                                          queue_size=1)
+        self.limit_switch_x_sub = rospy.Subscriber(
+            "gantry_motor_x/limit_switches",
+            GantryMotorLimitSwitches,
+            lambda msg: self.on_limit_switches_msg(msg, 0),
+            queue_size=1)
+
+        self.limit_switch_y_sub = rospy.Subscriber(
+            "gantry_motor_y/limit_switches",
+            GantryMotorLimitSwitches,
+            lambda msg: self.on_limit_switches_msg(msg, 0),
+            queue_size=1)
+
+        self.limit_switch_z_sub = rospy.Subscriber(
+            "gantry_motor_z/limit_switches",
+            GantryMotorLimitSwitches,
+            lambda msg: self.on_limit_switches_msg(msg, 0),
+            queue_size=1)
+
         self.subs = [
             self.pos_x_sub, self.pos_y_sub, self.pos_z_sub, self.vel_x_sub,
             self.vel_y_sub, self.vel_z_sub
         ]
 
-    def _get_homing_xy_widgets(self):
+    def _get_go_home_xy_widgets(self):
         return [
-            self._widget.findChild(QWidget, "rel_start_homing_xy"),
-            self._widget.findChild(QWidget, "vel_start_homing_xy")
+            self._widget.findChild(QWidget, "rel_go_home_xy"),
+            self._widget.findChild(QWidget, "vel_go_home_xy")
         ]
 
-    def _get_homing_z_widgets(self):
+    def _get_set_home_xy_widgets(self):
+        return [
+            self._widget.findChild(QWidget, "rel_set_home_xy"),
+            self._widget.findChild(QWidget, "vel_go_home_xy")
+        ]
+
+    def _get_set_home_z_widgets(self):
         return [
             self._widget.findChild(QWidget, "rel_set_home_z"),
             self._widget.findChild(QWidget, "vel_set_home_z")
         ]
 
-    def _set_enabled_homing_z_widget(self, value):
-        widgets = self._get_homing_z_widgets()
-        for widget in widgets:
-            if value:
-                widget.setEnabled(True)
-            else:
-                widget.setEnabled(False)
+    def _get_limit_switch_widgets(self, axis):
+        axis_letter = get_axis_letter(axis)
+        return [
+            self._widget.findChild(QWidget,
+                                   "ll_{}_indicator".format(axis_letter)),
+            self._widget.findChild(QWidget,
+                                   "ul_{}_indicator".format(axis_letter)),
+        ]
 
-    def _set_enabled_homing_xy_widget(self, value):
-        widgets = self._get_homing_xy_widgets()
-        for widget in widgets:
-            if value:
-                widget.setEnabled(True)
-            else:
-                widget.setEnabled(False)
+    def _get_enable_widgets(self):
+        return [
+            self._widget.findChild(QWidget, "rel_enable"),
+            self._widget.findChild(QWidget, "vel_enable"),
+        ]
 
-    def on_homing_xy(self):
-        rospy.loginfo("Homing button pressed!")
-        self._set_enabled_homing_xy_widget(False)
-        self.y_homing_thread = QThread()
-        self.y_homing_worker = HomingWorkerXY(1)
-        self.x_homing_thread = QThread()
-        self.x_homing_worker = HomingWorkerXY(0)
-        self.x_homing_worker.finished.connect(self.x_homing_thread.quit)
-        self.y_homing_worker.finished.connect(self.y_homing_thread.quit)
-        self.x_homing_thread.finished.connect(self.on_homing_xy_finished)
-        self.y_homing_thread.finished.connect(self.on_homing_xy_finished)
-        self.x_homing_worker.moveToThread(self.x_homing_thread)
-        self.y_homing_worker.moveToThread(self.y_homing_thread)
-        self.x_homing_thread.started.connect(self.x_homing_worker.home)
-        self.y_homing_thread.started.connect(self.y_homing_worker.home)
-        rospy.loginfo("Starting homing thread for x-axis")
-        self.x_homing_thread.start()
-        rospy.loginfo("Starting homing thread for y-axis")
-        self.y_homing_thread.start()
+    def _get_disable_widgets(self):
+        return [
+            self._widget.findChild(QWidget, "rel_disable"),
+            self._widget.findChild(QWidget, "vel_disable"),
+        ]
 
-    def on_homing_z(self):
-        self._set_enabled_homing_z_widget(False)
-        self.z_homing_thread = QThread()
-        self.z_homing_worker = HomingWorkerZ()
-        self.z_homing_worker.finished.connect(self.z_homing_thread.quit)
-        self.z_homing_thread.finished.connect(self.on_homing_z_finished)
-        self.z_homing_worker.moveToThread(self.z_homing_thread)
-        self.z_homing_thread.started.connect(self.z_homing_worker.home)
-        self.z_homing_thread.start()
+    def on_go_home_xy(self):
+        call_go_home(0)
+        call_go_home(1)
 
-    def on_homing_xy_finished(self):
-        if (self.y_homing_thread.isFinished()
-                and self.x_homing_thread.isFinished()):
-            self._set_enabled_homing_xy_widget(True)
+    def on_set_home_xy(self):
+        call_set_home(0)
+        call_set_home(1)
 
-    def on_homing_z_finished(self):
-        self._set_enabled_homing_z_widget(True)
+    def on_set_home_z(self):
+        call_set_home(2)
+
+    def on_enable_clicked(self):
+        for axis in range(3):
+            call_enable(axis)
+
+    def on_disable_clicked(self):
+        for axis in range(3):
+            call_disable(axis)
 
     def on_position_msg(self, msg, axis):
         self.position_changed.emit(msg.position, axis)
@@ -269,7 +378,7 @@ class ManualControlPlugin(Plugin):
         self.velocity_changed.emit(msg.velocity, axis)
 
     def on_position_changed(self, position, axis):
-        text = "{:.3f}".format(position)
+        text = "{}".format("%6.3F" % position)
         if axis == 0:
             widget = self._widget.findChild(QWidget, "actual_position_x")
         elif axis == 1:
@@ -279,7 +388,8 @@ class ManualControlPlugin(Plugin):
         widget.setText(text)
 
     def on_velocity_changed(self, velocity, axis):
-        text = "{}".format("%6.1F" % velocity)
+        # velocity is displayed in mm/s
+        text = "{:6.1f}".format(float(velocity) * 1000.0)
         if axis == 0:
             name = "actual_velocity_x"
         elif axis == 1:
@@ -288,6 +398,11 @@ class ManualControlPlugin(Plugin):
             name = "actual_velocity_z"
         widget = self._widget.findChild(QWidget, name)
         widget.setText(text)
+
+    def on_limit_switches_msg(self, msg, axis):
+        widgets = self._get_limit_switch_widgets(axis)
+        widgets[0].setChecked(msg.lower_limit)
+        widgets[1].setChecked(msg.upper_limit)
 
     def init_modes(self):
         mode_widget = self._widget.findChild(QWidget, "mode_combobox")
