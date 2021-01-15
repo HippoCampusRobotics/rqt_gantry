@@ -36,7 +36,7 @@ def call_go_home(axis):
 
 def call_set_home(axis):
     axis_letter = get_axis_letter(axis)
-    service_name = "gantry_motor_{}/start_homing".format(axis_letter)
+    service_name = "gantry_motor_{}/set_home_position".format(axis_letter)
     set_home = rospy.ServiceProxy(service_name, Trigger)
     try:
         set_home()
