@@ -1,5 +1,5 @@
 <library path="src">
-    <class name="ManualControlPlugin" type="rqt_gantry.gantry_gui.ManualControlPlugin" base_class_type="rqt_gui_py::Plugin">
+    <class name="ManualControlPlugin" type="rqt_gantry.manual_control_gui.ManualControlPlugin" base_class_type="rqt_gui_py::Plugin">
         <description>
         An example Python GUI plugin to create a great user interface.
       </description>
@@ -13,7 +13,27 @@
                 <label>Subgroup</label>
             </group> -->
 
-            <label>Gantry Control</label>
+            <label>Manual Gantry Control</label>
+            <icon type="theme">system-help</icon>
+            <statustip>Great user interface to provide real value.</statustip>
+        </qtgui>
+    </class>
+
+    <class name="PathFollowerPlugin" type="rqt_gantry.path_follower_gui.PathFollowerPlugin" base_class_type="rqt_gui_py::Plugin">
+        <description>
+        An example Python GUI plugin to create a great user interface.
+      </description>
+        <qtgui>
+            optional grouping...
+            <group>
+                <label>Gantry</label>
+                <icon type="theme">folder</icon>
+            </group>
+            <!-- <group>
+                <label>Subgroup</label>
+            </group> -->
+
+            <label>Path Follower</label>
             <icon type="theme">system-help</icon>
             <statustip>Great user interface to provide real value.</statustip>
         </qtgui>

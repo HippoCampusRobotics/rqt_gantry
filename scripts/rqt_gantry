@@ -2,7 +2,7 @@
 
 import sys
 
-from rqt_gantry.gantry_gui import GantryGuiPlugin
+from rqt_gantry.manual_control_gui import GantryGuiPlugin
 from rqt_gui.main import Main
 
 plugin = 'rqt_gantry'

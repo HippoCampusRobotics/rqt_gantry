@@ -1,6 +1,7 @@
 import rospy
 import rospkg
 import os
+import rosnode
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
@@ -8,7 +9,10 @@ from python_qt_binding.QtWidgets import QWidget
 from python_qt_binding.QtCore import Signal, QThread, QObject
 from std_msgs.msg import Float64
 from std_srvs.srv import Trigger
-from hippocampus_msgs.msg import GantryMotorPosition, GantryMotorVelocity, GantryMotorLimitSwitches
+from hippocampus_msgs.msg import (GantryMotorPosition, GantryMotorVelocity,
+                                  GantryMotorLimitSwitches)
+
+NODE_PREFIX = "gantry/motor_"
 
 
 def get_axis_letter(axis):
@@ -24,7 +28,7 @@ def get_axis_letter(axis):
 
 def call_go_home(axis):
     axis_letter = get_axis_letter(axis)
-    service_name = "gantry_motor_{}/start_homing".format(axis_letter)
+    service_name = "{}{}/start_homing".format(NODE_PREFIX, axis_letter)
     start_homing = rospy.ServiceProxy(service_name, Trigger)
     try:
         start_homing()
@@ -36,7 +40,7 @@ def call_go_home(axis):
 
 def call_set_home(axis):
     axis_letter = get_axis_letter(axis)
-    service_name = "gantry_motor_{}/set_home_position".format(axis_letter)
+    service_name = "{}{}/set_home_position".format(NODE_PREFIX, axis_letter)
     set_home = rospy.ServiceProxy(service_name, Trigger)
     try:
         set_home()
@@ -48,7 +52,7 @@ def call_set_home(axis):
 
 def call_enable(axis):
     axis_letter = get_axis_letter(axis)
-    service_name = "gantry_motor_{}/enable".format(axis_letter)
+    service_name = "{}{}/enable".format(NODE_PREFIX, axis_letter)
     enable = rospy.ServiceProxy(service_name, Trigger)
     try:
         enable()
@@ -60,7 +64,7 @@ def call_enable(axis):
 
 def call_disable(axis):
     axis_letter = get_axis_letter(axis)
-    service_name = "gantry_motor_{}/disable".format(axis_letter)
+    service_name = "{}{}/disable".format(NODE_PREFIX, axis_letter)
     disable = rospy.ServiceProxy(service_name, Trigger)
     try:
         disable()
@@ -72,7 +76,7 @@ def call_disable(axis):
 
 def call_emergency_stop(axis):
     axis_letter = get_axis_letter(axis)
-    service_name = "gantry_motor_{}/emergency_stop".format(axis_letter)
+    service_name = "{}{}/emergency_stop".format(NODE_PREFIX, axis_letter)
     emergency_stop = rospy.ServiceProxy(service_name, Trigger)
     try:
         emergency_stop()
@@ -83,7 +87,8 @@ def call_emergency_stop(axis):
 
 def call_release_emergency_stop(axis):
     axis_letter = get_axis_letter(axis)
-    service_name = "gantry_motor_{}/release_emergency_stop".format(axis_letter)
+    service_name = "{}{}/release_emergency_stop".format(NODE_PREFIX,
+                                                        axis_letter)
     release = rospy.ServiceProxy(service_name, Trigger)
     try:
         release()
@@ -252,58 +257,58 @@ class ManualControlPlugin(Plugin):
 
     def init_publishers(self):
         self.rel_pos_x_pub = rospy.Publisher(
-            "gantry_motor_x/setpoint_position/relative", Float64, queue_size=1)
+            "{}x/setpoint_position/relative".format(NODE_PREFIX), Float64, queue_size=1)
         self.rel_pos_y_pub = rospy.Publisher(
-            "gantry_motor_y/setpoint_position/relative", Float64, queue_size=1)
+            "{}y/setpoint_position/relative".format(NODE_PREFIX), Float64, queue_size=1)
         self.rel_pos_z_pub = rospy.Publisher(
-            "gantry_motor_z/setpoint_position/relative", Float64, queue_size=1)
+            "{}z/setpoint_position/relative".format(NODE_PREFIX), Float64, queue_size=1)
         self.pubs = [self.rel_pos_x_pub, self.rel_pos_y_pub, self.rel_pos_z_pub]
 
     def init_subscribers(self):
-        self.pos_x_sub = rospy.Subscriber("gantry_motor_x/position",
+        self.pos_x_sub = rospy.Subscriber("{}x/position".format(NODE_PREFIX),
                                           GantryMotorPosition,
                                           self.on_position_msg,
                                           0,
                                           queue_size=1)
-        self.pos_y_sub = rospy.Subscriber("gantry_motor_y/position",
+        self.pos_y_sub = rospy.Subscriber("{}y/position".format(NODE_PREFIX),
                                           GantryMotorPosition,
                                           self.on_position_msg,
                                           1,
                                           queue_size=1)
-        self.pos_z_sub = rospy.Subscriber("gantry_motor_z/position",
+        self.pos_z_sub = rospy.Subscriber("{}z/position".format(NODE_PREFIX),
                                           GantryMotorPosition,
                                           self.on_position_msg,
                                           2,
                                           queue_size=1)
-        self.vel_x_sub = rospy.Subscriber("gantry_motor_x/velocity",
+        self.vel_x_sub = rospy.Subscriber("{}x/velocity".format(NODE_PREFIX),
                                           GantryMotorVelocity,
                                           self.on_velocity_msg,
                                           0,
                                           queue_size=1)
-        self.vel_y_sub = rospy.Subscriber("gantry_motor_y/velocity",
+        self.vel_y_sub = rospy.Subscriber("{}y/velocity".format(NODE_PREFIX),
                                           GantryMotorVelocity,
                                           self.on_velocity_msg,
                                           1,
                                           queue_size=1)
-        self.vel_z_sub = rospy.Subscriber("gantry_motor_z/velocity",
+        self.vel_z_sub = rospy.Subscriber("{}z/velocity".format(NODE_PREFIX),
                                           GantryMotorVelocity,
                                           self.on_velocity_msg,
                                           2,
                                           queue_size=1)
         self.limit_switch_x_sub = rospy.Subscriber(
-            "gantry_motor_x/limit_switches",
+            "{}x/limit_switches".format(NODE_PREFIX),
             GantryMotorLimitSwitches,
             lambda msg: self.on_limit_switches_msg(msg, 0),
             queue_size=1)
 
         self.limit_switch_y_sub = rospy.Subscriber(
-            "gantry_motor_y/limit_switches",
+            "{}y/limit_switches".format(NODE_PREFIX),
             GantryMotorLimitSwitches,
             lambda msg: self.on_limit_switches_msg(msg, 1),
             queue_size=1)
 
         self.limit_switch_z_sub = rospy.Subscriber(
-            "gantry_motor_z/limit_switches",
+            "{}z/limit_switches".format(NODE_PREFIX),
             GantryMotorLimitSwitches,
             lambda msg: self.on_limit_switches_msg(msg, 2),
             queue_size=1)
