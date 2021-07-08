@@ -196,6 +196,9 @@
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="11" column="5">
            <widget class="QPushButton" name="rel_set_speed">
+            <property name="toolTip">
+             <string>Apply currently set maximum velocity for position control mode.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -207,6 +210,9 @@
           </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="rel_forward_y">
+            <property name="toolTip">
+             <string>Move along positive y-axis direction.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -241,6 +247,9 @@
           </item>
           <item row="3" column="2">
            <widget class="QPushButton" name="rel_forward_x">
+            <property name="toolTip">
+             <string>Move along positive x-axis direction.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -304,6 +313,9 @@
               <height>0</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Move along negative y-axis direction.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -352,6 +364,9 @@
           </item>
           <item row="3" column="0">
            <widget class="QPushButton" name="rel_backward_x">
+            <property name="toolTip">
+             <string>Move along negative x-axis direction.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -376,6 +391,9 @@
           </item>
           <item row="11" column="6">
            <widget class="QPushButton" name="rel_get_speed">
+            <property name="toolTip">
+             <string>Load/refresh currently set maximum velocity for position control mode.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -394,6 +412,9 @@
           </item>
           <item row="3" column="4" colspan="3">
            <widget class="QPushButton" name="rel_enable">
+            <property name="toolTip">
+             <string>Enable motors.</string>
+            </property>
             <property name="text">
              <string>Enable</string>
             </property>
@@ -401,6 +422,9 @@
           </item>
           <item row="5" column="4" colspan="3">
            <widget class="QPushButton" name="rel_disable">
+            <property name="toolTip">
+             <string>Disable motors.</string>
+            </property>
             <property name="text">
              <string>Disable</string>
             </property>
@@ -408,6 +432,9 @@
           </item>
           <item row="3" column="3">
            <widget class="QPushButton" name="rel_set_home_z">
+            <property name="toolTip">
+             <string>Home z-axis.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -432,6 +459,9 @@
           </item>
           <item row="0" column="0">
            <widget class="QPushButton" name="rel_set_home_xy">
+            <property name="toolTip">
+             <string>Home x- and y-axis.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -453,6 +483,9 @@
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="0">
            <widget class="QPushButton" name="vel_set_home_xy">
+            <property name="toolTip">
+             <string>Home x- and y-axis.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -486,6 +519,9 @@
           </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="y_move_forward_button">
+            <property name="toolTip">
+             <string>Move along positive y-axis direction.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -520,6 +556,9 @@
           </item>
           <item row="1" column="4" colspan="2">
            <widget class="QPushButton" name="vel_enable">
+            <property name="toolTip">
+             <string>Enable motors.</string>
+            </property>
             <property name="text">
              <string>Enable</string>
             </property>
@@ -527,6 +566,9 @@
           </item>
           <item row="1" column="2">
            <widget class="QPushButton" name="x_move_forward_button">
+            <property name="toolTip">
+             <string>Move along positive x-axis direction.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -575,6 +617,9 @@
           </item>
           <item row="1" column="3">
            <widget class="QPushButton" name="vel_set_home_z">
+            <property name="toolTip">
+             <string>Home z-axis.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -592,6 +637,9 @@
           </item>
           <item row="2" column="1">
            <widget class="QPushButton" name="y_move_backward_button">
+            <property name="toolTip">
+             <string>Move along negative y-axis direction.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -622,6 +670,9 @@
           </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="x_move_backward_button">
+            <property name="toolTip">
+             <string>Move along negative x-axis direction.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -656,6 +707,9 @@
           </item>
           <item row="2" column="4" colspan="2">
            <widget class="QPushButton" name="vel_disable">
+            <property name="toolTip">
+             <string>Disabale motors.</string>
+            </property>
             <property name="text">
              <string>Disable</string>
             </property>
@@ -677,6 +731,9 @@
    </item>
    <item row="5" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox_3">
+     <property name="toolTip">
+      <string>Overview of the limit switch states.</string>
+     </property>
      <property name="title">
       <string>Limit Switches</string>
      </property>
@@ -718,6 +775,9 @@
       </item>
       <item row="1" column="1" alignment="Qt::AlignHCenter">
        <widget class="QCheckBox" name="ll_x_indicator">
+        <property name="toolTip">
+         <string>State of the lower limit switch of the x-axis</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -725,6 +785,9 @@
       </item>
       <item row="1" column="2" alignment="Qt::AlignHCenter">
        <widget class="QCheckBox" name="ul_x_indicator">
+        <property name="toolTip">
+         <string>State of the upper limit switch of the x-axis</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -732,6 +795,9 @@
       </item>
       <item row="2" column="1" alignment="Qt::AlignHCenter">
        <widget class="QCheckBox" name="ll_y_indicator">
+        <property name="toolTip">
+         <string>State of the lower limit switch of the y-axis</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -739,6 +805,9 @@
       </item>
       <item row="2" column="2" alignment="Qt::AlignHCenter">
        <widget class="QCheckBox" name="ul_y_indicator">
+        <property name="toolTip">
+         <string>State of the upper limit switch of the y-axis</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -746,6 +815,9 @@
       </item>
       <item row="3" column="1" alignment="Qt::AlignHCenter">
        <widget class="QCheckBox" name="ll_z_indicator">
+        <property name="toolTip">
+         <string>State of the lower limit switch of the z-axis</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -753,6 +825,9 @@
       </item>
       <item row="3" column="2" alignment="Qt::AlignHCenter">
        <widget class="QCheckBox" name="ul_z_indicator">
+        <property name="toolTip">
+         <string>State of the upper limit switch of the z-axis</string>
+        </property>
         <property name="text">
          <string/>
         </property>
