@@ -185,6 +185,7 @@ class ManualControlPlugin(Plugin):
         self.init_go_home_buttons()
         self.init_set_home_buttons()
         self.init_move_relative_buttons()
+        self.init_move_velocity_buttons()
         self.init_disable_buttons()
         self.init_enable_buttons()
         self.init_limit_switch_indicators()
@@ -208,6 +209,44 @@ class ManualControlPlugin(Plugin):
         widget.clicked.connect(lambda: self.move_relative(2, False))
         widget = self._widget.findChild(QWidget, "rel_forward_z")
         widget.clicked.connect(lambda: self.move_relative(2, True))
+
+    def init_move_velocity_buttons(self):
+        widget = self._widget.findChild(QWidget, "x_move_forward_button")
+        widget.pressed.connect(lambda: self.move_velocity(0, True, False))
+        widget.released.connect(lambda: self.move_velocity(0, True, True))
+        widget = self._widget.findChild(QWidget, "x_move_backward_button")
+        widget.pressed.connect(lambda: self.move_velocity(0, False, False))
+        widget.released.connect(lambda: self.move_velocity(0, False, True))
+        widget = self._widget.findChild(QWidget, "y_move_forward_button")
+        widget.pressed.connect(lambda: self.move_velocity(1, True, False))
+        widget.released.connect(lambda: self.move_velocity(1, True, True))
+        widget = self._widget.findChild(QWidget, "y_move_backward_button")
+        widget.pressed.connect(lambda: self.move_velocity(1, False, False))
+        widget.released.connect(lambda: self.move_velocity(1, False, True))
+        widget = self._widget.findChild(QWidget, "z_move_forward_button")
+        widget.pressed.connect(lambda: self.move_velocity(2, True, False))
+        widget.released.connect(lambda: self.move_velocity(2, True, True))
+        widget = self._widget.findChild(QWidget, "z_move_backward_button")
+        widget.pressed.connect(lambda: self.move_velocity(2, False, False))
+        widget.released.connect(lambda: self.move_velocity(2, False, True))
+
+    def move_velocity(self, axis, forward, stop):
+        if stop:
+            v = 0.0
+        else:
+            vel_widget = self._widget.findChild(QWidget, "move_speed_spinbox")
+            v = vel_widget.value()
+            if not forward:
+                v = -v
+        msg = Float64(v)
+        if axis == 0:
+            self.move_x_pub.publish(msg)
+        elif axis == 1:
+            self.move_y_pub.publish(msg)
+        elif axis == 2:
+            self.move_z_pub.publish(msg)
+        else:
+            rospy.logerr("Given axis for moving with velocity is undefined!")
 
     def move_relative(self, axis, forward):
         step_size_widget = self._widget.findChild(QWidget, "rel_step_size")
@@ -257,11 +296,23 @@ class ManualControlPlugin(Plugin):
 
     def init_publishers(self):
         self.rel_pos_x_pub = rospy.Publisher(
-            "{}x/setpoint_position/relative".format(NODE_PREFIX), Float64, queue_size=1)
+            "{}x/setpoint_position/relative".format(NODE_PREFIX),
+            Float64,
+            queue_size=1)
         self.rel_pos_y_pub = rospy.Publisher(
-            "{}y/setpoint_position/relative".format(NODE_PREFIX), Float64, queue_size=1)
+            "{}y/setpoint_position/relative".format(NODE_PREFIX),
+            Float64,
+            queue_size=1)
         self.rel_pos_z_pub = rospy.Publisher(
-            "{}z/setpoint_position/relative".format(NODE_PREFIX), Float64, queue_size=1)
+            "{}z/setpoint_position/relative".format(NODE_PREFIX),
+            Float64,
+            queue_size=1)
+        self.move_x_pub = rospy.Publisher(
+            "{}x/setpoint_velocity".format(NODE_PREFIX), Float64, queue_size=1)
+        self.move_y_pub = rospy.Publisher(
+            "{}y/setpoint_velocity".format(NODE_PREFIX), Float64, queue_size=1)
+        self.move_z_pub = rospy.Publisher(
+            "{}z/setpoint_velocity".format(NODE_PREFIX), Float64, queue_size=1)
         self.pubs = [self.rel_pos_x_pub, self.rel_pos_y_pub, self.rel_pos_z_pub]
 
     def init_subscribers(self):

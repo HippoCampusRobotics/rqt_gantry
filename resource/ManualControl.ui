@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>364</width>
-    <height>608</height>
+    <width>377</width>
+    <height>764</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -451,6 +451,80 @@
         </widget>
         <widget class="QWidget" name="velocity">
          <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="0">
+           <widget class="QPushButton" name="vel_set_home_xy">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>msl.svg</normaloff>msl.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2" colspan="2">
+           <widget class="QDoubleSpinBox" name="move_speed_spinbox">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="minimum">
+             <double>0.010000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>0.250000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="y_move_forward_button">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="go-up">
+              <normaloff>.</normaloff>.</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QPushButton" name="z_move_backward_button">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="go-down">
+              <normaloff>.</normaloff>.</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4" colspan="2">
+           <widget class="QPushButton" name="vel_enable">
+            <property name="text">
+             <string>Enable</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="2">
            <widget class="QPushButton" name="x_move_forward_button">
             <property name="text">
@@ -475,13 +549,13 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QPushButton" name="y_move_backward_button">
+          <item row="1" column="1">
+           <widget class="QPushButton" name="vel_go_home_xy">
             <property name="text">
              <string/>
             </property>
             <property name="icon">
-             <iconset theme="go-down">
+             <iconset theme="go-home">
               <normaloff>.</normaloff>.</iconset>
             </property>
             <property name="iconSize">
@@ -492,8 +566,32 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="3">
-           <widget class="QPushButton" name="z_move_backward_button">
+          <item row="0" column="4" colspan="2">
+           <widget class="QPushButton" name="move_stop_button">
+            <property name="text">
+             <string>STOP</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="vel_set_home_z">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>msl.svg</normaloff>msl.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QPushButton" name="y_move_backward_button">
             <property name="text">
              <string/>
             </property>
@@ -522,40 +620,6 @@
             </property>
            </spacer>
           </item>
-          <item row="3" column="5">
-           <widget class="QPushButton" name="move_apply_speed">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset theme="document-save">
-              <normaloff>.</normaloff>.</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>16</width>
-              <height>16</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="y_move_forward_button">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset theme="go-up">
-              <normaloff>.</normaloff>.</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>32</width>
-              <height>32</height>
-             </size>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="x_move_backward_button">
             <property name="text">
@@ -563,23 +627,6 @@
             </property>
             <property name="icon">
              <iconset theme="go-previous">
-              <normaloff>.</normaloff>.</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>32</width>
-              <height>32</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="vel_go_home_xy">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset theme="go-home">
               <normaloff>.</normaloff>.</iconset>
             </property>
             <property name="iconSize">
@@ -607,86 +654,17 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QLabel" name="move_speed_label">
-            <property name="text">
-             <string>Speed:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2" colspan="2">
-           <widget class="QDoubleSpinBox" name="move_speed_spinbox">
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="6">
-           <widget class="QPushButton" name="vel_refresh_speed_button">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset theme="view-refresh">
-              <normaloff>.</normaloff>.</iconset>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="4" colspan="3">
+          <item row="2" column="4" colspan="2">
            <widget class="QPushButton" name="vel_disable">
             <property name="text">
              <string>Disable</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="4" colspan="3">
-           <widget class="QPushButton" name="vel_enable">
+          <item row="3" column="0" colspan="2">
+           <widget class="QLabel" name="move_speed_label">
             <property name="text">
-             <string>Enable</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4" colspan="3">
-           <widget class="QPushButton" name="move_stop_button">
-            <property name="text">
-             <string>STOP</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <widget class="QPushButton" name="vel_set_home_z">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>msl.svg</normaloff>msl.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>32</width>
-              <height>32</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QPushButton" name="vel_set_home_xy">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>msl.svg</normaloff>msl.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>32</width>
-              <height>32</height>
-             </size>
+             <string>Speed:</string>
             </property>
            </widget>
           </item>
