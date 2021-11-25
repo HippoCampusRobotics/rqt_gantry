@@ -112,21 +112,21 @@ class PathFollowerPlugin(Plugin):
         output = "[{}] [{}] {}".format(level, time.strftime("%H:%M:%S"), text)
         current_scrollbar = console.verticalScrollBar().value()
         max_scrollbar = console.verticalScrollBar().maximum()
-        autoscroll =  current_scrollbar == max_scrollbar
+        autoscroll = current_scrollbar == max_scrollbar
 
         console.appendPlainText(output)
         if autoscroll:
-            console.verticalScrollBar().setValue(console.verticalScrollBar().maximum())
+            console.verticalScrollBar().setValue(
+                console.verticalScrollBar().maximum())
 
     def loginfo(self, text):
         self._log("INFO", text)
-    
+
     def logwarn(self, text):
         self._log("WARN", text)
 
     def logerr(self, text):
         self._log("ERROR", text)
-
 
     def on_namespace_changed(self, namespace):
         node_combo = self._widget.node_combobox
@@ -195,14 +195,15 @@ class PathFollowerPlugin(Plugin):
         with open(filename) as f:
             data = yaml.load(f)
         rospy.set_param(self.get_selected_node(), data)
-        self.handle_trigger_response(
-            *call_update_path(self.get_selected_node()), show_success=True)
+        self.handle_trigger_response(*call_update_path(
+            self.get_selected_node()),
+                                     show_success=True)
 
     def on_start(self):
         self.handle_trigger_response(*call_start(self.get_selected_node()))
 
     def on_stop(self):
-        self.handle_trigger_response(call_stop(self.get_selected_node()))
+        self.handle_trigger_response(*call_stop(self.get_selected_node()))
 
     def on_move_to_start(self):
         self.handle_trigger_response(
